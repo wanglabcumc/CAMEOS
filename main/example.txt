@@ -1,0 +1,1 @@
+output/	infA	aroB	jlds/infA.jld	jlds/aroB.jld	hmms/infA.hmm	hmms/aroB.hmm	100	p1	250
