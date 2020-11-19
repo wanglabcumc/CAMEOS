@@ -418,6 +418,6 @@ function run_file()
 
 end
 
-run_file()
+@time run_file()
 
 end
