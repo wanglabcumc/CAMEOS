@@ -24,7 +24,7 @@ function read_raw(raw_file, out_file)
 	co2 = 0
 	row = 0
 	cur_rows = zeros(21, 21)
-	for line in raw_read[(ncol + 1):end]
+	for line in raw_read[(ncol + 1):(end-1)]
 		if line[1] == '#'
 			if !(co1 == 0 && co2 == 0)
 				sub_read(w2, co1, co2, cur_rows)
