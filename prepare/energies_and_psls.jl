@@ -38,6 +38,44 @@ function compute_psls(prot_mat, w1, w2, nNodes, nProt)
 	return -all_scores
 end
 
+function save_energies(computed_energies, gene_name)
+    local out_file
+    try
+	    out_file = open("../main/energies/energy_$(gene_name).txt", "w")
+    catch err
+        if isa(err, SystemError)
+            out_file = open("energy_$(gene_name).txt", "w")
+            println("Warning: writting energy output to working directory")
+        else
+            rethrow()
+        end
+    finally
+	    for energy in computed_energies
+		    write(out_file, "$energy\n")
+	    end
+	    close(out_file)
+    end
+end
+
+function save_psls(computed_psls, gene_name)
+    local out_file
+    try
+	    out_file = open("../main/psls/psls_$(gene_name).txt", "w")
+    catch err
+        if isa(err, SystemError)
+            out_file = open("psls_$(gene_name).txt", "w")
+            println("Warning: writting pseudolhood output to working directory")
+        else
+            rethrow()
+        end
+    finally
+	    for psl in computed_psls
+		    write(out_file, "$psl\n")
+	    end
+	    close(out_file)
+    end  
+end
+
 function run(gene_name, jld_file, msa_file)
 	println("Reading msa file")
 	in_file = open(msa_file)
@@ -63,22 +101,14 @@ function run(gene_name, jld_file, msa_file)
 	w1 = mrf["w1"]
 	w2 = mrf["w2"]
 
-	computed_energies = compute_energies(prot_mat, w1, w2)
-	computed_psls = compute_psls(prot_mat, w1, w2, num_aa, num_prot)
+	@time computed_energies = compute_energies(prot_mat, w1, w2)
+	@time computed_psls = compute_psls(prot_mat, w1, w2, num_aa, num_prot)
 
 	#Write outputs to main directory.
 	println("Done. Saving energies/psls.")
-	out_file = open("../main/energies/energy_$(gene_name).txt", "w")
-	for energy in computed_energies
-		write(out_file, "$energy\n")
-	end
-	close(out_file)
 
-	out_file = open("../main/psls/psls_$(gene_name).txt", "w")
-	for psl in computed_psls
-		write(out_file, "$psl\n")
-	end
-	close(out_file)
+    save_energies(computed_energies, gene_name)
+    save_psls(computed_psls, gene_name)
 end
 
 function main()
