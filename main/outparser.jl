@@ -33,12 +33,15 @@ function parse_commandline()
         "--fasta"
             help = "generate a FASTA file too"
             action = :store_true
+        "--just-fullseq"
+            help = "the FASTA will only contain the full sequence"
+            action = :store_true
 	end
 	return parse_args(s)
 end
 
 function outparse_cameos()
-    println("=-= CAMEOS output parser =-= v0.3 - Mar 2021 =-= by LLNL =-=")
+    println("=-= CAMEOS output parser =-= v0.4 - Mar 2021 =-= by LLNL =-=")
 
     # Parse arguments
    	parsed_args = parse_commandline()
@@ -47,6 +50,7 @@ function outparse_cameos()
 	runid = parsed_args["runid"]
 	frame = parsed_args["frame"]
     fasta = parsed_args["fasta"]
+    justfullseq = parsed_args["just-fullseq"]
 
     # Get complete path for input and output files
     subdir = string(mark_gene, "_", deg_gene, "_", frame)
@@ -108,11 +112,14 @@ function outparse_cameos()
             end
 
             for var in variants
-                # print2fasta(var, "full_sequence")  # equal to mark_nuc.nucs
-                print2fasta(var, "mark_seq")
-                print2fasta(var, "mark_nuc", true)
-                print2fasta(var, "deg_seq")
-                print2fasta(var, "deg_nuc", true)
+                if justfullseq
+                    print2fasta(var, "full_sequence")  # equal to mark_nuc.nucs
+                else
+                    print2fasta(var, "mark_seq")
+                    print2fasta(var, "mark_nuc", true)
+                    print2fasta(var, "deg_seq")
+                    print2fasta(var, "deg_nuc", true)
+                end
                 variant += 1
                 if variant % 200 == 0
                     print(".")
