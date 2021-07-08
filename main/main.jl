@@ -389,7 +389,7 @@ function run_file()
 
 					the_out_path = "$out_dir/$(short)_$(long)_$frame/"
 					if !(isdir(the_out_path))
-						run(`mkdir $the_out_path`)
+						run(`mkdir -p $the_out_path`)
 					end
 
 					log_io = open("$out_dir/$(short)_$(long)_$frame/log_$(rand_barcode).txt", "w+")
@@ -418,6 +418,6 @@ function run_file()
 
 end
 
-run_file()
+@time run_file()
 
 end
